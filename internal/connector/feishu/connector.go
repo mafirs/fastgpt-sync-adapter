@@ -459,9 +459,8 @@ func (c *Connector) scan(ctx context.Context) error {
 								if ma.ID == "" || ma.Name == "" || ma.IsInline {
 									continue
 								}
-								// 附件名后加 messageID 短码，避免不同邮件的同名附件互相覆盖。
-								// 邮件 ID 统一用列表给的 msgID，不依赖详情响应里的字段
-								shortID := msgID
+								// 附件名后加 messageID 短码，避免不同邮件的同名附件互相覆盖
+								shortID := msg.MessageID
 								if len(shortID) > 8 {
 									shortID = shortID[len(shortID)-8:]
 								}
@@ -472,7 +471,7 @@ func (c *Connector) scan(ctx context.Context) error {
 								}
 								recordAtts = append(recordAtts, model.Attachment{
 									Name:   attName + ext,
-									FileID: "mail:" + msgID + ":" + ma.ID,
+									FileID: "mail:" + msg.MessageID + ":" + ma.ID,
 									Size:   ma.Size,
 									UserID: g.ExternalUserID,
 								})
@@ -481,7 +480,7 @@ func (c *Connector) scan(ctx context.Context) error {
 								rec := model.Record{
 									Source:      "feishu",
 									Kind:        "mail",
-									ID:          "mail_" + msgID,
+									ID:          "mail_" + msg.MessageID,
 									Timestamp:   msg.CreatedTime,
 									OwnerIDs:    []string{g.ExternalUserID},
 									SenderID:    g.ExternalUserID,

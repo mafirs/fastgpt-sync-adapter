@@ -80,12 +80,12 @@ func (c *Client) GetMailMessage(userToken, messageID string) (*MailMessage, erro
 		apiResp
 		Data struct {
 			Message struct {
-				MessageID    string `json:"message_id"` // 字段名以官方 SDK 为准：message_id，不是 id
+				MessageID    string `json:"message_id"`
 				Subject      string `json:"subject"`
 				HeadFrom     struct {
 					MailAddress string `json:"mail_address"`
 					Name        string `json:"name"`
-				} `json:"head_from"` // 发件人是对象 {mail_address, name}，不是字符串
+				} `json:"head_from"`
 				InternalDate string `json:"internal_date"`
 				Attachments  []struct {
 					ID             string `json:"id"`
@@ -137,7 +137,7 @@ func (c *Client) DownloadMailAttachment(userToken, messageID, attachmentID strin
 			FailedReasons []struct {
 				AttachmentID string `json:"attachment_id"`
 				Reason       string `json:"reason"`
-			} `json:"failed_reasons"` // 官方 SDK 定义为数组，不是映射
+			} `json:"failed_reasons"`
 		} `json:"data"`
 	}
 	if err := c.getWithToken(u, userToken, &out); err != nil {

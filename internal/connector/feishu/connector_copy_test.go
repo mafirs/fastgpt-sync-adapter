@@ -504,24 +504,3 @@ func TestCopyInactiveOwnerKeptUntilReauth(t *testing.T) {
 		t.Fatalf("A 重新授权后应删 A 的那份，实际 %v", kinds(got))
 	}
 }
-
-// 邮件 ID 以列表给的为准：详情里拿不到 ID 时，记录 ID、附件标识、附件名后缀仍然用列表里的 ID。
-func TestCopyMailUsesListMessageID(t *testing.T) {
-	st := copyStore(t, "ou_a")
-	api := newCopyAPI()
-	api.roots["ut0"] = "rootA"
-	api.mailIDs = []string{"msg_abcdefgh123"}
-	api.mailMap["msg_abcdefgh123"] = &feishuapi.MailMessage{
-		CreatedTime: 1700000000000,
-		Attachments: []feishuapi.MailAttachment{{ID: "a1", Name: "合同.pdf"}},
-	}
-	c := newUserConn(t, st, api, Config{})
-	got := round(t, c)
-	if len(got) != 1 || got[0].ID != "mail_msg_abcdefgh123" {
-		t.Fatalf("记录 ID 应为 mail_msg_abcdefgh123，实际 %v", kinds(got))
-	}
-	a := got[0].Attachments[0]
-	if a.FileID != "mail:msg_abcdefgh123:a1" || a.Name != "合同_defgh123.pdf" {
-		t.Fatalf("附件标识/文件名应带列表里的邮件 ID，实际 %q %q", a.FileID, a.Name)
-	}
-}

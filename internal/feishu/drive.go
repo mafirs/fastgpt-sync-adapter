@@ -247,7 +247,7 @@ func (c *Client) ListPermissionMembers(userToken, token, docType string) ([]Perm
 	var out struct {
 		apiResp
 		Data struct {
-			Items []PermissionMember `json:"items"` // 接口返回字段是 items（实测与官方 SDK 一致），不是 members
+			Items []PermissionMember `json:"items"`
 		} `json:"data"`
 	}
 	if err := c.get("/drive/v1/permissions/"+token+"/members", userToken, q, &out); err != nil {
