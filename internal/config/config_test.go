@@ -226,3 +226,15 @@ func TestServerValidateAdminAllowCIDR(t *testing.T) {
 		})
 	}
 }
+
+// 示例配置里的共享文件夹搜索配置能读出来：周期和每轮人数都生效。
+func TestSharedDiscoverConfigInExample(t *testing.T) {
+	cfg, err := Load("../../config.example.yaml")
+	if err != nil {
+		t.Fatalf("Load: %v", err)
+	}
+	fc := cfg.Connectors.Feishu
+	if fc.SharedDiscover.D() != time.Hour || fc.SharedFullInterval.D() != 24*time.Hour || fc.SharedPerRound != 10 {
+		t.Fatalf("配置不符: %v %v %d", fc.SharedDiscover.D(), fc.SharedFullInterval.D(), fc.SharedPerRound)
+	}
+}
